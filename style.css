@@ -27,7 +27,7 @@ body {
     padding: 2px;
 }
 
-/* CẬP NHẬT: Thêm border kẻ ô phân chia giữa các khoảng trống */
+/* Cấu hình ô & Kẻ viền phân cách các ô */
 .cell {
     width: 32px;
     height: 32px;
@@ -35,7 +35,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px solid rgba(0, 0, 0, 0.15); /* Đường kẻ viền mờ giúp tách biệt các ô */
+    border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 /* Nền tường và sàn */
@@ -47,7 +47,7 @@ body {
     background-color: #ecf0f1; 
 }
 
-/* Gắn hình ảnh PNG */
+/* Gắn hình ảnh PNG (giữ nền #ecf0f1 để ảnh không bị đen) */
 .player { 
     background-image: url('player.png'); 
     background-color: #ecf0f1;
