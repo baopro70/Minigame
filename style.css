@@ -27,7 +27,7 @@ body {
     padding: 2px;
 }
 
-/* Cấu hình chung cho ô bàn chơi */
+/* CẬP NHẬT: Thêm border kẻ ô phân chia giữa các khoảng trống */
 .cell {
     width: 32px;
     height: 32px;
@@ -35,6 +35,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    border: 1px solid rgba(0, 0, 0, 0.15); /* Đường kẻ viền mờ giúp tách biệt các ô */
 }
 
 /* Nền tường và sàn */
@@ -46,7 +47,7 @@ body {
     background-color: #ecf0f1; 
 }
 
-/* Gắn hình ảnh PNG (Nền bên dưới ảnh là màu sàn #ecf0f1 để tránh bị đen) */
+/* Gắn hình ảnh PNG */
 .player { 
     background-image: url('player.png'); 
     background-color: #ecf0f1;
@@ -63,7 +64,6 @@ body {
     background-image: url('box.png'); 
     background-color: #ecf0f1;
 }
-/* Hộp đã vào đích: Dùng chung ảnh box.png và giữ nền màu sàn */
 .box-on-target { 
     background-image: url('box.png'); 
     background-color: #ecf0f1;
