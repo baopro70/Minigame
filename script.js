@@ -1,5 +1,4 @@
-// Danh sách màn chơi Demo mới
-// Danh sách màn chơi mới (Phân cấp: Dễ -> Tư duy -> Khó)
+// Danh sách màn chơi
 const levels = [
     // MÀN 0: Tutorial (Hướng dẫn - 1 thùng)
     [
@@ -7,8 +6,7 @@ const levels = [
         "# @$.#",
         "######"
     ],
-
-    // MÀN 1: Cấp 1 (Dễ - 2 thùng, không gian vừa phải để làm quen)
+    // MÀN 1: Cấp 1 (Dễ - 2 thùng)
     [
         "#######",
         "# @   #",
@@ -17,8 +15,7 @@ const levels = [
         "#     #",
         "#######"
     ],
-
-    // MÀN 2: Cấp 2 (Tư duy xíu - 3 thùng, có vật cản yêu cầu chọn thứ tự đẩy)
+    // MÀN 2: Cấp 2 (Tư duy xíu - 3 thùng)
     [
         "#########",
         "#   #   #",
@@ -28,8 +25,7 @@ const levels = [
         "#   .   #",
         "#########"
     ],
-
-    // MÀN 3: Cấp 3 (Khó - 4 thùng, đường hẹp & dễ sập bẫy góc chết)
+    // MÀN 3: Cấp 3 (Khó - 4 thùng)
     [
         "  ###### ",
         "###  @ # ",
@@ -41,12 +37,34 @@ const levels = [
         "######## "
     ]
 ];
+
 let currentLevelIndex = 0;
 let map = [];
 let playerPos = { r: 0, c: 0 };
 let moveHistory = [];
+let ytPlayer;
+
+// Khởi tạo YouTube Player ẩn với Video ID lấy từ link Shorts của bạn (3Y6vx9wdGJc)
+function onYouTubeIframeAPIReady() {
+    ytPlayer = new YT.Player('youtube-player', {
+        height: '0',
+        width: '0',
+        videoId: '3Y6vx9wdGJc',
+        playerVars: {
+            'playsinline': 1
+        }
+    });
+}
 
 function playSFX(id) {
+    if (id === 'sfx-birthday') {
+        if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+            ytPlayer.seekTo(0);
+            ytPlayer.playVideo();
+        }
+        return;
+    }
+
     const sound = document.getElementById(id);
     if (sound) {
         sound.currentTime = 0;
@@ -95,13 +113,21 @@ function renderMap() {
             cell.className = 'cell';
             const char = map[r][c] || ' ';
 
-            if (char === '#') cell.classList.add('wall');
-            else if (char === '.') cell.classList.add('target');
-            else if (char === '$') cell.classList.add('box');
-            else if (char === '*') cell.classList.add('box-on-target');
-            else if (char === '@') cell.classList.add('player', 'floor');
-            else if (char === '+') cell.classList.add('player-on-target');
-            else cell.classList.add('floor');
+            if (char === '#') {
+                cell.classList.add('wall');
+            } else if (char === '.') {
+                cell.classList.add('target');
+            } else if (char === '$') {
+                cell.classList.add('box');
+            } else if (char === '*') {
+                cell.classList.add('box-on-target');
+            } else if (char === '@') {
+                cell.classList.add('player', 'floor');
+            } else if (char === '+') {
+                cell.classList.add('player-on-target');
+            } else {
+                cell.classList.add('floor');
+            }
 
             board.appendChild(cell);
         }
@@ -175,19 +201,27 @@ function checkWin() {
             }
         }
     }
+
     if (hasWon) {
-        playSFX('sfx-win');
+        const isGameCompleted = (currentLevelIndex === levels.length - 1);
+
+        if (isGameCompleted) {
+            playSFX('sfx-birthday'); // Phát bài Happy Birthday từ YouTube
+        } else {
+            playSFX('sfx-win');
+        }
+
         setTimeout(() => {
-            alert('Chúc mừng! Bạn đã hoàn thành màn chơi!');
-            if (currentLevelIndex < levels.length - 1) {
+            if (!isGameCompleted) {
+                alert('🎉 Chúc mừng! Bạn đã hoàn thành màn chơi!');
                 currentLevelIndex++;
                 const select = document.getElementById('levelSelect');
                 if (select) select.value = currentLevelIndex;
                 loadLevel(currentLevelIndex);
             } else {
-                alert('Chúc mừng sinh nhật!!! Happy birthday!🎉 ');
+                alert('🎂 Chúc mừng sinh nhật chị Minh Hạnh!! ');
             }
-        }, 200);
+        }, 300);
     }
 }
 
