@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sokoban Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Sokoban Demo</h1>
+        <div class="controls-bar" style="margin-bottom: 15px; display: flex; gap: 10px; justify-content: center;">
+            <select id="levelSelect" onchange="changeLevel(this.value)">
+                <option value="0">Màn 0: Tutorial (Hướng dẫn)</option>
+                <option value="1">Màn 1: Cấp độ Nhập môn</option>
+                <option value="2">Màn 2: Cấp độ Tập tư duy</option>
+                <option value="3">Màn 3: Cấp độ Thử thách vừa</option>
+            </select>
+            <button onclick="restartLevel()">Chơi lại</button>
+            <button onclick="undoMove()">Đi lại</button>
+        </div>
+
+        <div id="board" class="board"></div>
+
+        <div class="mobile-controls">
+            <button class="btn-up" onclick="handleMove(-1, 0)">▲</button>
+            <div class="horizontal">
+                <button onclick="handleMove(0, -1)">◄</button>
+                <button onclick="undoMove()">↩</button>
+                <button onclick="handleMove(0, 1)">►</button>
+            </div>
+            <button class="btn-down" onclick="handleMove(1, 0)">▼</button>
+        </div>
+    </div>
+
+    <!-- Âm thanh game -->
+    <audio id="sfx-step" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-push" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
+    <audio id="sfx-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
