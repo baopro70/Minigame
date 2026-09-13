@@ -27,7 +27,7 @@ body {
     padding: 2px;
 }
 
-/* Cấu hình chung cho ô để hiển thị ảnh vừa vặn */
+/* Cấu hình chung cho ô bàn chơi */
 .cell {
     width: 32px;
     height: 32px;
@@ -37,23 +37,39 @@ body {
     background-repeat: no-repeat;
 }
 
-.wall { background-color: #7f8c8d; border: 1px solid #95a5a6; }
-.floor { background-color: #ecf0f1; }
+/* Nền tường và sàn */
+.wall { 
+    background-color: #7f8c8d; 
+    border: 1px solid #95a5a6; 
+}
+.floor { 
+    background-color: #ecf0f1; 
+}
 
-/* Đường dẫn ảnh */
+/* Gắn hình ảnh PNG (Nền bên dưới ảnh là màu sàn #ecf0f1 để tránh bị đen) */
 .player { 
     background-image: url('player.png'); 
+    background-color: #ecf0f1;
 }
 .player-on-target { 
     background-image: url('player.png'); 
+    background-color: #ecf0f1;
 }
 .target { 
     background-image: url('target.png'); 
+    background-color: #ecf0f1;
 }
 .box { 
     background-image: url('box.png'); 
+    background-color: #ecf0f1;
+}
+/* Hộp đã vào đích: Dùng chung ảnh box.png và giữ nền màu sàn */
+.box-on-target { 
+    background-image: url('box.png'); 
+    background-color: #ecf0f1;
 }
 
+/* Nút bấm & Bảng điều khiển */
 .mobile-controls {
     margin-top: 15px;
     display: flex;
@@ -61,10 +77,12 @@ body {
     align-items: center;
     gap: 5px;
 }
+
 .mobile-controls .horizontal {
     display: flex;
     gap: 5px;
 }
+
 button {
     padding: 8px 16px;
     font-size: 16px;
@@ -74,9 +92,11 @@ button {
     background-color: #e74c3c;
     color: white;
 }
+
 button:hover {
     background-color: #c0392b;
 }
+
 select {
     padding: 8px;
     font-size: 16px;
