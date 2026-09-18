@@ -200,10 +200,10 @@ function showWinModal(isGameCompleted) {
     const modal = document.getElementById('winModal');
     if (!title || !message || !button || !modal) return;
 
-    title.textContent = isGameCompleted ? '🎂 Chúc mừng!' : '🎉 Chúc mừng!';
+    title.textContent = isGameCompleted ? '🎂 Chiến thắng!' : '🎉 Chiến thắng!';
     message.textContent = isGameCompleted
-        ? 'Bạn đã phá đảo trò chơi. Chúc mừng sinh nhật chị Minh Hạnh!!'
-        : 'Bạn đã hoàn thành màn chơi!';
+        ? 'Chúc mừng sinh nhật chị Minh Hạnh!!'
+        : 'Bạn đã chiến thắng!';
     button.textContent = isGameCompleted ? 'Chơi lại' : 'Màn tiếp theo';
     button.dataset.completed = String(isGameCompleted);
     modal.classList.remove('hidden');
