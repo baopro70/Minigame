@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sokoban Demo</title>
+    <title>Sokoban Game</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -33,15 +33,33 @@
         </div>
     </div>
 
-    <!-- Âm thanh game thường -->
+    <!-- UI Modal Thông Báo Đầu Game (Nhắc bật loa) -->
+    <div id="startModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2>📢 LƯU Ý BẮT ĐẦU</h2>
+            <p>Hãy bật loa lên nhé, sẽ có điều <b>"thú vị"</b> khi hoàn thành trò chơi! 🔊🎶</p>
+            <button onclick="startGame()">Đã hiểu, Chơi ngay!</button>
+        </div>
+    </div>
+
+    <!-- UI Modal Thông Báo Thắng Màn / Phá Đảo Game -->
+    <div id="winModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h2 id="modalTitle">🎉 Chúc mừng!</h2>
+            <p id="modalMessage">Bạn đã hoàn thành màn chơi!</p>
+            <button id="modalBtn" onclick="closeModal()">Màn tiếp theo</button>
+        </div>
+    </div>
+
+    <!-- Âm thanh game -->
     <audio id="sfx-step" src="https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3" preload="auto"></audio>
     <audio id="sfx-push" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3" preload="auto"></audio>
     <audio id="sfx-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
-    <!-- Trình phát YouTube ẩn để phát bài Happy Birthday khi phá đảo -->
+    <!-- Trình phát YouTube ẩn để phát nhạc Happy Birthday khi thắng màn cuối -->
     <div id="youtube-player" style="display: none;"></div>
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script src="./script.js"></script>
 </body>
-</html>
+            </html>
