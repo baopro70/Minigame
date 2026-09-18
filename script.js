@@ -1,237 +1,161 @@
-// Danh sách màn chơi
-const levels = [
-    // MÀN 0: Tutorial (Hướng dẫn - 1 thùng)
-    [
-        "######",
-        "# @$.#",
-        "######"
-    ],
-    // MÀN 1: Cấp 1 (Dễ - 2 thùng)
-    [
-        "#######",
-        "# @   #",
-        "# $ $ #",
-        "# . . #",
-        "#     #",
-        "#######"
-    ],
-    // MÀN 2: Cấp 2 (Tư duy xíu - 3 thùng)
-    [
-        "#########",
-        "#   #   #",
-        "# @ $ . #",
-        "# # $ # #",
-        "#   $ . #",
-        "#   .   #",
-        "#########"
-    ],
-    // MÀN 3: Cấp 3 (Khó - 4 thùng)
-    [
-        "  ###### ",
-        "###  @ # ",
-        "# $ #$ # ",
-        "# . .  # ",
-        "##$## ## ",
-        "# . $  # ",
-        "#   .  # ",
-        "######## "
-    ]
-];
-
-let currentLevelIndex = 0;
-let map = [];
-let playerPos = { r: 0, c: 0 };
-let moveHistory = [];
-let ytPlayer;
-
-// Khởi tạo YouTube Player ẩn với Video ID lấy từ link Shorts của bạn (3Y6vx9wdGJc)
-function onYouTubeIframeAPIReady() {
-    ytPlayer = new YT.Player('youtube-player', {
-        height: '0',
-        width: '0',
-        videoId: '3Y6vx9wdGJc',
-        playerVars: {
-            'playsinline': 1
-        }
-    });
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2c3e50;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
 }
 
-function playSFX(id) {
-    if (id === 'sfx-birthday') {
-        if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
-            ytPlayer.seekTo(0);
-            ytPlayer.playVideo();
-        }
-        return;
-    }
-
-    const sound = document.getElementById(id);
-    if (sound) {
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-    }
+.game-container {
+    text-align: center;
+    background-color: #34495e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-function loadLevel(levelIdx) {
-    currentLevelIndex = levelIdx;
-    const rawLevel = levels[levelIdx];
-
-    let maxCols = 0;
-    rawLevel.forEach(row => {
-        if (row.length > maxCols) maxCols = row.length;
-    });
-
-    map = rawLevel.map(row => {
-        let arr = row.split('');
-        while (arr.length < maxCols) arr.push(' ');
-        return arr;
-    });
-
-    moveHistory = [];
-
-    for (let r = 0; r < map.length; r++) {
-        for (let c = 0; c < map[r].length; c++) {
-            if (map[r][c] === '@' || map[r][c] === '+') {
-                playerPos = { r, c };
-            }
-        }
-    }
-    renderMap();
+.board {
+    display: grid;
+    gap: 0;
+    justify-content: center;
+    margin: 15px auto;
+    background-color: #111;
+    border: 4px solid #7f8c8d;
+    padding: 2px;
 }
 
-function renderMap() {
-    const board = document.getElementById('board');
-    if (!board) return;
-    board.innerHTML = '';
-
-    const maxCols = map[0].length;
-    board.style.gridTemplateColumns = `repeat(${maxCols}, 32px)`;
-
-    for (let r = 0; r < map.length; r++) {
-        for (let c = 0; c < maxCols; c++) {
-            const cell = document.createElement('div');
-            cell.className = 'cell';
-            const char = map[r][c] || ' ';
-
-            if (char === '#') {
-                cell.classList.add('wall');
-            } else if (char === '.') {
-                cell.classList.add('target');
-            } else if (char === '$') {
-                cell.classList.add('box');
-            } else if (char === '*') {
-                cell.classList.add('box-on-target');
-            } else if (char === '@') {
-                cell.classList.add('player', 'floor');
-            } else if (char === '+') {
-                cell.classList.add('player-on-target');
-            } else {
-                cell.classList.add('floor');
-            }
-
-            board.appendChild(cell);
-        }
-    }
+/* Cấu hình ô & Kẻ viền phân cách các ô */
+.cell {
+    width: 32px;
+    height: 32px;
+    box-sizing: border-box;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-function handleMove(dr, dc) {
-    const nr = playerPos.r + dr;
-    const nc = playerPos.c + dc;
-
-    if (nr < 0 || nr >= map.length || nc < 0 || nc >= map[nr].length) return;
-
-    const targetCell = map[nr][nc];
-    if (targetCell === '#' || targetCell === undefined) return;
-
-    const prevMapState = map.map(row => [...row]);
-    const prevPlayerPos = { ...playerPos };
-
-    if (targetCell === ' ' || targetCell === '.') {
-        map[playerPos.r][playerPos.c] = map[playerPos.r][playerPos.c] === '+' ? '.' : ' ';
-        playerPos = { r: nr, c: nc };
-        map[nr][nc] = targetCell === '.' ? '+' : '@';
-
-        moveHistory.push({ map: prevMapState, playerPos: prevPlayerPos });
-        playSFX('sfx-step');
-        renderMap();
-        checkWin();
-    } else if (targetCell === '$' || targetCell === '*') {
-        const boxNr = nr + dr;
-        const boxNc = nc + dc;
-        if (boxNr < 0 || boxNr >= map.length || boxNc < 0 || boxNc >= map[boxNr].length) return;
-
-        const boxTargetCell = map[boxNr][boxNc];
-        if (boxTargetCell === ' ' || boxTargetCell === '.') {
-            map[boxNr][boxNc] = boxTargetCell === '.' ? '*' : '$';
-            map[nr][nc] = targetCell === '*' ? '+' : '@';
-            map[playerPos.r][playerPos.c] = map[playerPos.r][playerPos.c] === '+' ? '.' : ' ';
-            playerPos = { r: nr, c: nc };
-
-            moveHistory.push({ map: prevMapState, playerPos: prevPlayerPos });
-            playSFX('sfx-push');
-            renderMap();
-            checkWin();
-        }
-    }
+/* Nền tường và sàn */
+.wall { 
+    background-color: #7f8c8d; 
+    border: 1px solid #95a5a6; 
+}
+.floor { 
+    background-color: #ecf0f1; 
 }
 
-function undoMove() {
-    if (moveHistory.length === 0) return;
-    const lastState = moveHistory.pop();
-    map = lastState.map;
-    playerPos = lastState.playerPos;
-    renderMap();
+/* Gắn hình ảnh PNG (nền #ecf0f1 giữ ảnh trong suốt chuẩn) */
+.player { 
+    background-image: url('player.png'); 
+    background-color: #ecf0f1;
+}
+.player-on-target { 
+    background-image: url('player.png'); 
+    background-color: #ecf0f1;
+}
+.target { 
+    background-image: url('target.png'); 
+    background-color: #ecf0f1;
+}
+.box { 
+    background-image: url('box.png'); 
+    background-color: #ecf0f1;
+}
+.box-on-target { 
+    background-image: url('box.png'); 
+    background-color: #ecf0f1;
 }
 
-function restartLevel() {
-    loadLevel(currentLevelIndex);
+/* Nút bấm & Bảng điều khiển */
+.mobile-controls {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
 }
 
-function changeLevel(idx) {
-    loadLevel(parseInt(idx, 10));
+.mobile-controls .horizontal {
+    display: flex;
+    gap: 5px;
 }
 
-function checkWin() {
-    let hasWon = true;
-    for (let r = 0; r < map.length; r++) {
-        for (let c = 0; c < map[r].length; c++) {
-            if (map[r][c] === '$') {
-                hasWon = false;
-                break;
-            }
-        }
-    }
-
-    if (hasWon) {
-        const isGameCompleted = (currentLevelIndex === levels.length - 1);
-
-        if (isGameCompleted) {
-            playSFX('sfx-birthday'); // Phát bài Happy Birthday từ YouTube
-        } else {
-            playSFX('sfx-win');
-        }
-
-        setTimeout(() => {
-            if (!isGameCompleted) {
-                alert('🎉 Chúc mừng! Bạn đã hoàn thành màn chơi!');
-                currentLevelIndex++;
-                const select = document.getElementById('levelSelect');
-                if (select) select.value = currentLevelIndex;
-                loadLevel(currentLevelIndex);
-            } else {
-                alert('🎂 Chúc mừng sinh nhật chị Minh Hạnh!! ');
-            }
-        }, 300);
-    }
+button {
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #e74c3c;
+    color: white;
 }
 
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') handleMove(-1, 0);
-    if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') handleMove(1, 0);
-    if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') handleMove(0, -1);
-    if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') handleMove(0, 1);
-});
+button:hover {
+    background-color: #c0392b;
+}
 
-window.onload = () => {
-    loadLevel(0);
-};
+select {
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+
+/* UI MODAL POPUP */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    border: 2px solid #f1c40f;
+    max-width: 320px;
+    width: 90%;
+    animation: popIn 0.3s ease-out;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #f1c40f;
+}
+
+.modal-content p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 15px 0 20px 0;
+}
+
+.modal-content button {
+    background-color: #2ecc71;
+    font-size: 16px;
+    padding: 10px 20px;
+}
+
+.modal-content button:hover {
+    background-color: #27ae60;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
