@@ -47,7 +47,7 @@ body {
     background-color: #ecf0f1; 
 }
 
-/* Gắn hình ảnh PNG (giữ nền #ecf0f1 để ảnh không bị đen) */
+/* Gắn hình ảnh PNG (nền #ecf0f1 giữ ảnh trong suốt chuẩn) */
 .player { 
     background-image: url('player.png'); 
     background-color: #ecf0f1;
@@ -102,3 +102,60 @@ select {
     font-size: 16px;
     border-radius: 4px;
 }
+
+/* UI MODAL POPUP */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-content {
+    background-color: #2c3e50;
+    color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    border: 2px solid #f1c40f;
+    max-width: 320px;
+    width: 90%;
+    animation: popIn 0.3s ease-out;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: #f1c40f;
+}
+
+.modal-content p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 15px 0 20px 0;
+}
+
+.modal-content button {
+    background-color: #2ecc71;
+    font-size: 16px;
+    padding: 10px 20px;
+}
+
+.modal-content button:hover {
+    background-color: #27ae60;
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+    }
